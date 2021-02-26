@@ -7,7 +7,7 @@ import cors from "cors";
 import { userRouter } from "./routes/userRouter";
 import { songRouter } from "./routes/songRouter";
 import { scoreRouter } from "./routes/scoreRouter";
-
+import { sequelize } from "./model";
 
 dotenv.config();
 /**
@@ -35,7 +35,15 @@ app.use('/score',scoreRouter);
 /**
  * Server Activation
  */
-app.listen(PORT,HOST,() => {
+app.listen(PORT,HOST,async () => {
     console.log(`Server Listening on ${HOST}:${PORT}`);
-    
+
+    // //sequelize-db 연결 테스트
+    // await sequelize.authenticate()
+    // .then(async () => {
+    //     console.log("connection success");
+    // })
+    // .catch((e) => {
+    //     console.log('TT : ', e);
+    // })
 })

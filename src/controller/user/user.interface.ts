@@ -2,6 +2,6 @@ export interface User {
     id : number;
     email : string;
     nickname : string;
-    sex : number;
+    sex : boolean;
     age : number;
 }
