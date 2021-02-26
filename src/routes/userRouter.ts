@@ -17,7 +17,7 @@ const userRouter = express.Router();
 userRouter.get("/userinfo",controller.default.getUser.userInfo);
 
 //POST
-userRouter.post('signup',controller.default.postUser.signup);
+userRouter.post('/signup',controller.default.postUser.signup);
 
  
  export {userRouter};
