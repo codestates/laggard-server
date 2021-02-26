@@ -104,10 +104,10 @@ let migrationAllTable = async () => {
     fs.readdir(path.join(__dirname,"/","create-table"),async (err,files) => {
         if(err) console.log("err : ", err);
         if(files) {
-            console.log("files : ", files);
+            // console.log("files : ", files);
             files.forEach(el=> {
-                // console.log(el.substring(el.indexOf('.')+1,14));
-                if(el.substring(2,14) === 'create-table'){
+                // console.log(el.substr(el.indexOf('.')+1,12));
+                if(el.substr(el.indexOf('.')+1,12) === 'create-table'){
                     migrationFiles.push(el);
                 }
             })
@@ -135,11 +135,16 @@ let migrationAllTable = async () => {
             //     //     console.log("Err : ", e);
             //     // }
             // })
-
+            migrationFiles.sort((a,b) => {
+                return Number(a.substr(0,a.indexOf('.'))) - Number(b.substr(0,b.indexOf('.')))
+            });
+            console.log("migrationFiles : ", migrationFiles);
+            
             for(let el of migrationFiles){
                 console.log("Migration File Name : ", el);
                 // let result =  await exec(`./node_modules/.bin/ts-node "${__dirname}/create-table/${el}"`)
                 // console.log(result);
+                /////
                 const { stdout, stderr } = await asyncExec(`./node_modules/.bin/ts-node "${__dirname}/create-table/${el}"`)
                 if(stdout) console.log(stdout);
                 if(stderr) console.error("Std Err : ",stderr);
