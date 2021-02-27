@@ -52,19 +52,19 @@ export class Songs extends Model<SongsAttributes>{
 Songs.init(
     {
         artist : {
-            type : DataTypes.STRING,
+            type : DataTypes.STRING(45),
             allowNull : false
         },
         title : {
-            type : DataTypes.STRING,
+            type : DataTypes.STRING(45),
             allowNull: false
         },
         album_title : {
-            type : DataTypes.STRING,
+            type : DataTypes.STRING(45),
             allowNull : false
         },
         lyrics : {
-            type : DataTypes.STRING,
+            type : DataTypes.STRING(12000),
             allowNull : false
         },
         publishedAt : {
@@ -76,7 +76,7 @@ Songs.init(
             allowNull : false
         },
         genre : {
-            type : DataTypes.STRING,
+            type : DataTypes.STRING(45),
             allowNull : false
         },
         rank : {
@@ -84,7 +84,7 @@ Songs.init(
             allowNull : false
         },
         idol_index : {
-            type : DataTypes.STRING,
+            type : DataTypes.STRING(45),
             allowNull : true
         }
     },

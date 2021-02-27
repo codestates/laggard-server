@@ -57,15 +57,15 @@ export class Users extends Model<UsersAttributes>{
 Users.init(
     {
         email : {
-            type : DataTypes.STRING,
+            type : DataTypes.STRING(45),
             allowNull: false
         },
         password : {
-            type : DataTypes.STRING,
+            type : DataTypes.STRING(45),
             allowNull : true
         },
         nickname : {
-            type : DataTypes.STRING,
+            type : DataTypes.STRING(45),
             allowNull : false
         },
         age : {

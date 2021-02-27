@@ -13,16 +13,16 @@ import { Songs } from './songs';
 import { Users } from './users';
 
 interface Users_and_songsAttributes{
-    users_id : number;
-    songs_id : number;
-    right_answer : number;
+    user_id : number;
+    song_id : number;
+    right_or_wrong : boolean;
 }
 
 export class Users_and_songs extends Model<Users_and_songsAttributes>{
     public readonly id!: number;
-    public users_id!: number;
-    public songs_id!: number;
-    public right_answer!: number;
+    public user_id!: number;
+    public song_id!: number;
+    public right_or_wrong!: boolean;
 
     //timestamp
     public readonly createdAt! : Date;
@@ -54,7 +54,7 @@ export class Users_and_songs extends Model<Users_and_songsAttributes>{
 
 Users_and_songs.init(
     {
-        users_id : {
+        user_id : {
             type : DataTypes.INTEGER,
             allowNull : false,
             references : {
@@ -63,7 +63,7 @@ Users_and_songs.init(
             },
             onDelete : 'CASCADE'
         },
-        songs_id : {
+        song_id : {
             type : DataTypes.INTEGER,
             allowNull : false,
             references : {
@@ -72,8 +72,9 @@ Users_and_songs.init(
             },
             onDelete : 'CASCADE'
         },
-        right_answer : {
-            type : DataTypes.BOOLEAN
+        right_or_wrong : {
+            type : DataTypes.BOOLEAN,
+            allowNull : false
         }
     },{
         modelName : 'Users_and_songs',
@@ -85,5 +86,21 @@ Users_and_songs.init(
     }
 )
 
-Users_and_songs.hasMany(Users);
-Users_and_songs.hasMany(Songs);
+// Users_and_songs.hasMany(Users);
+// Users_and_songs.hasMany(Songs);
+
+Users_and_songs.hasMany(Users,{
+    sourceKey : "user_id",
+    foreignKey : "id",
+    as : "Users_and_songsHasManyUser_id"
+})
+
+Users_and_songs.hasMany(Songs,{
+    sourceKey : "song_id",
+    foreignKey : "id",
+    as : "Users_and_songsHasManySong_id"
+})
+
+//혹시 안되면 아래껄로
+// Users.belongsToMany(Songs,{through : "Users_and_songs"});
+// Songs.belongsToMany(Users,{through : "Users_and_songs"});
