@@ -13,6 +13,7 @@ import { Songs } from './songs';
 import { Users } from './users';
 
 interface Users_and_songsAttributes{
+    id : number | null;
     user_id : number;
     song_id : number;
     right_or_wrong : boolean;
@@ -54,6 +55,11 @@ export class Users_and_songs extends Model<Users_and_songsAttributes>{
 
 Users_and_songs.init(
     {
+        id : {
+            type : DataTypes.BIGINT.UNSIGNED,
+            autoIncrement : true,
+            primaryKey : true
+        },
         user_id : {
             type : DataTypes.INTEGER,
             allowNull : false,

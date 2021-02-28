@@ -3,6 +3,7 @@ import { Sequelize, Model, DataTypes } from 'sequelize';
 
 
 interface periodsAttributes{
+    id : number | null;
     start_year : number;
 }
 
@@ -16,6 +17,11 @@ export class Periods extends Model<periodsAttributes>{
 
 Periods.init(
     {
+        id : {
+            type : DataTypes.BIGINT.UNSIGNED,
+            autoIncrement : true,
+            primaryKey : true
+        },
         start_year : {
             type : DataTypes.INTEGER,
             allowNull : false

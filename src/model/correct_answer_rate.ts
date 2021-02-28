@@ -11,6 +11,7 @@ import { Sequelize,
 import { Songs } from './songs';
 
 interface Correct_answer_rateAttributes{
+    id : number | null;
     songs_id : number;
     age : number;
     sex : boolean;
@@ -39,6 +40,11 @@ export class Correct_answer_rate extends Model<Correct_answer_rateAttributes>{
 
 Correct_answer_rate.init(
     {
+        id : {
+            type : DataTypes.BIGINT.UNSIGNED,
+            autoIncrement : true,
+            primaryKey : true
+        },
         songs_id : {
             type : DataTypes.INTEGER,
             allowNull : false,

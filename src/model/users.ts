@@ -15,7 +15,7 @@ import { Scores } from './scores';
 
 // These are all the attributes in the User model
 interface UsersAttributes {
-    // id: number | null;
+    id: number | null;
     email : string,
     password : string | null,
     nickname : string,
@@ -56,12 +56,17 @@ export class Users extends Model<UsersAttributes>{
 
 Users.init(
     {
+        id : {
+            type : DataTypes.BIGINT.UNSIGNED,
+            autoIncrement : true,
+            primaryKey : true
+        },
         email : {
             type : DataTypes.STRING(45),
             allowNull: false
         },
         password : {
-            type : DataTypes.STRING(45),
+            type : DataTypes.STRING(100),
             allowNull : true
         },
         nickname : {

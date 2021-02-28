@@ -3,6 +3,7 @@ import { Sequelize, Model, DataTypes } from 'sequelize';
 
 
 interface genresAttributes{
+    id : number | null;
     classification : string;
 }
 
@@ -16,6 +17,11 @@ export class Genres extends Model<genresAttributes>{
 
 Genres.init(
     {
+        id : {
+            type : DataTypes.BIGINT.UNSIGNED,
+            autoIncrement : true,
+            primaryKey : true
+        },
         classification : {
             type : DataTypes.STRING(45),
             allowNull : false

@@ -9,6 +9,7 @@ import { Sequelize,
 import { Users } from './users';
 
 interface ScoresAttributes{
+    id : number | null;
     user_id : number;
     songs_year : Date;
     score : number;
@@ -30,6 +31,11 @@ export class Scores extends Model<ScoresAttributes>{
 
 Scores.init(
     {
+        id : {
+            type : DataTypes.BIGINT.UNSIGNED,
+            autoIncrement : true,
+            primaryKey : true
+        },
         user_id : {
             type : DataTypes.INTEGER,
             allowNull : false,

@@ -3,6 +3,7 @@ import { Sequelize, Model, DataTypes } from 'sequelize';
 
 
 interface testsAttributes {
+    id : number | null;
     types_id : number;
     age : number;
     sex : boolean;
@@ -21,6 +22,11 @@ export class Tests extends Model<testsAttributes> {
 
 Tests.init(
     {
+        id : {
+            type : DataTypes.BIGINT.UNSIGNED,
+            autoIncrement : true,
+            primaryKey : true
+        },
         types_id : {
             type : DataTypes.INTEGER,
             references : {

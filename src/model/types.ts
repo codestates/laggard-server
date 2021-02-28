@@ -3,6 +3,7 @@ import { Sequelize, Model, DataTypes } from 'sequelize';
 import { Tests } from './tests';
 
 interface typesAttributes {
+    id : number | null;
     title : string;
     subtitle : string;
     description : string;
@@ -20,6 +21,11 @@ export class Types extends Model<typesAttributes>{
 
 Types.init(
     {
+        id : {
+            type : DataTypes.BIGINT.UNSIGNED,
+            autoIncrement : true,
+            primaryKey : true
+        },
         title : {
             type : DataTypes.STRING(45),
             allowNull : false
