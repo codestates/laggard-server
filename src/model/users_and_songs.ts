@@ -61,7 +61,7 @@ Users_and_songs.init(
             primaryKey : true
         },
         user_id : {
-            type : DataTypes.INTEGER,
+            type : DataTypes.BIGINT.UNSIGNED,
             allowNull : false,
             references : {
                 model : "Users",
@@ -70,7 +70,7 @@ Users_and_songs.init(
             onDelete : 'CASCADE'
         },
         song_id : {
-            type : DataTypes.INTEGER,
+            type : DataTypes.BIGINT.UNSIGNED,
             allowNull : false,
             references : {
                 model : "Songs",

@@ -37,7 +37,7 @@ Scores.init(
             primaryKey : true
         },
         user_id : {
-            type : DataTypes.INTEGER,
+            type : DataTypes.BIGINT.UNSIGNED,
             allowNull : false,
             references : {
                 model: "Users",

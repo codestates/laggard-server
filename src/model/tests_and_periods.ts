@@ -26,7 +26,7 @@ Tests_and_periods.init(
             primaryKey : true
         },
         tests_id : {
-            type : DataTypes.INTEGER,
+            type : DataTypes.BIGINT.UNSIGNED,
             allowNull : false,
             references : {
                 model: "Tests",
@@ -34,7 +34,7 @@ Tests_and_periods.init(
             }
         },
         periods_id : {
-            type : DataTypes.INTEGER,
+            type : DataTypes.BIGINT.UNSIGNED,
             allowNull : false,
             references : {
                 model : "Periods",

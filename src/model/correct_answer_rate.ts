@@ -46,7 +46,7 @@ Correct_answer_rate.init(
             primaryKey : true
         },
         songs_id : {
-            type : DataTypes.INTEGER,
+            type : DataTypes.BIGINT.UNSIGNED,
             allowNull : false,
             references : {
                 model : "Songs",

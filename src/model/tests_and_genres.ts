@@ -25,7 +25,7 @@ Tests_and_genres.init(
             primaryKey : true
         },
         tests_id : {
-            type : DataTypes.INTEGER,
+            type : DataTypes.BIGINT.UNSIGNED,
             allowNull : false,
             references : {
                 model : "Tests",
@@ -34,7 +34,7 @@ Tests_and_genres.init(
             onDelete : "CASCADE"
         },
         genres_id : {
-            type : DataTypes.INTEGER,
+            type : DataTypes.BIGINT.UNSIGNED,
             allowNull : false,
             references : {
                 model : "Genres",

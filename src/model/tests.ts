@@ -28,7 +28,7 @@ Tests.init(
             primaryKey : true
         },
         types_id : {
-            type : DataTypes.INTEGER,
+            type : DataTypes.BIGINT.UNSIGNED,
             references : {
                 model: "Types",
                 key : "id"
