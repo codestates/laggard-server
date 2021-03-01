@@ -13,11 +13,10 @@ const userRouter = express.Router();
  * Controller Definitions
  */
 
- //GET
-userRouter.get("/userinfo",controller.default.getUser.userInfo);
+//GET
+userRouter.get('/userinfo', controller.default.getUser.userInfo);
 
 //POST
-userRouter.post('/signup',controller.default.postUser.signup);
+userRouter.post('/signup', controller.default.postUser.signup);
 
- 
- export {userRouter};
+export { userRouter };

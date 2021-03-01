@@ -12,5 +12,4 @@ const songRouter = express.Router();
  * Controller Definitions
  */
 
-
- export {songRouter};
+export { songRouter };

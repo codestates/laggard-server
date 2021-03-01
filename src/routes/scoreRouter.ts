@@ -12,5 +12,5 @@ const scoreRouter = express.Router();
 /**
  * Controller Definitions
  */
- 
- export {scoreRouter};
+
+export { scoreRouter };
