@@ -4,6 +4,7 @@ import { Tests } from './tests';
 import { Genres } from './genres';
 
 interface tests_and_genresAttributes{
+    id : number | null;
     tests_id : number;
     genres_id : number;
     right_or_wrong : boolean;
@@ -18,8 +19,13 @@ export class Tests_and_genres extends Model<tests_and_genresAttributes>{
 
 Tests_and_genres.init(
     {
+        id : {
+            type : DataTypes.BIGINT.UNSIGNED,
+            autoIncrement : true,
+            primaryKey : true
+        },
         tests_id : {
-            type : DataTypes.INTEGER,
+            type : DataTypes.BIGINT.UNSIGNED,
             allowNull : false,
             references : {
                 model : "Tests",
@@ -28,7 +34,7 @@ Tests_and_genres.init(
             onDelete : "CASCADE"
         },
         genres_id : {
-            type : DataTypes.INTEGER,
+            type : DataTypes.BIGINT.UNSIGNED,
             allowNull : false,
             references : {
                 model : "Genres",

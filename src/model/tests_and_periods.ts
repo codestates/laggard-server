@@ -4,6 +4,7 @@ import { Tests } from './tests';
 
 
 interface tests_and_periodsAttributes{
+    id : number | null;
     tests_id : number;
     periods_id : number;
 }
@@ -19,8 +20,13 @@ export class Tests_and_periods extends Model<tests_and_periodsAttributes>{
 
 Tests_and_periods.init(
     {
+        id : {
+            type : DataTypes.BIGINT.UNSIGNED,
+            autoIncrement : true,
+            primaryKey : true
+        },
         tests_id : {
-            type : DataTypes.INTEGER,
+            type : DataTypes.BIGINT.UNSIGNED,
             allowNull : false,
             references : {
                 model: "Tests",
@@ -28,7 +34,7 @@ Tests_and_periods.init(
             }
         },
         periods_id : {
-            type : DataTypes.INTEGER,
+            type : DataTypes.BIGINT.UNSIGNED,
             allowNull : false,
             references : {
                 model : "Periods",

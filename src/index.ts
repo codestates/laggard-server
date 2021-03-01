@@ -47,3 +47,5 @@ app.listen(PORT,HOST,async () => {
     //     console.log('TT : ', e);
     // })
 })
+
+export {app}

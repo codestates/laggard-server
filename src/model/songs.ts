@@ -3,12 +3,12 @@ import {sequelize} from './index';
 
 // These are all the attributes in the User model
 interface SongsAttributes {
-    // id: number | null;
+    id: number | null;
     artist : string ,
     title : string,
     album_title : string,
     lyrics : string,
-    publishedAt : string,
+    year : string,
     g_songId : number,
     genre : string,
     rank : number,
@@ -21,7 +21,7 @@ export class Songs extends Model<SongsAttributes>{
     public artist! : string;
     public album_title! : string;
     public lyrics! : string;
-    public publishedAt! : string;
+    public year! : string;
     public g_songId! : number;
     public genre! : string;
     public rank! : number;
@@ -51,6 +51,11 @@ export class Songs extends Model<SongsAttributes>{
 
 Songs.init(
     {
+        id : {
+            type : DataTypes.BIGINT.UNSIGNED,
+            autoIncrement : true,
+            primaryKey : true
+        },
         artist : {
             type : DataTypes.STRING(45),
             allowNull : false
@@ -67,7 +72,7 @@ Songs.init(
             type : DataTypes.STRING(12000),
             allowNull : false
         },
-        publishedAt : {
+        year : {
             type : DataTypes.STRING,
             allowNull : false
         },
