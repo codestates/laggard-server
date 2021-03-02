@@ -6,7 +6,7 @@ import { SHA256 } from 'crypto-js';
 export const putUser = {
     modify : async(req : Request, res : Response) => {
         console.log("Modify userInfo");
-        console.log("req.body : ", req.body);
+        // console.log("req.body : ", req.body);
         
         let parseToken = verifyToken(String(req.headers.authorization));
 
@@ -24,7 +24,7 @@ export const putUser = {
                 where : {id}
             })
 
-            console.log("userInfo : ", userInfo);
+            // console.log("userInfo : ", userInfo);
             let password = modifyPassword || userInfo?.password;
             let nickname = req.body.nickname || userInfo?.nickname;
 
@@ -43,7 +43,7 @@ export const putUser = {
                 res.send({message : 'err'})
             }) 
         }else{
-            res.status(403).send('Invalid Access Token');
+            res.status(403).send({message : 'Invalid Access Token'});
         }
     }
 }

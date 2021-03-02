@@ -3,5 +3,5 @@ export interface User {
     email : string;
     nickname : string;
     sex : boolean;
-    age : number;
+    birth_year : number;
 }

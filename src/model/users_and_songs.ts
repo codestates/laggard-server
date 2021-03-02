@@ -98,13 +98,15 @@ Users_and_songs.init(
 Users_and_songs.hasMany(Users,{
     sourceKey : "user_id",
     foreignKey : "id",
-    as : "Users_and_songsHasManyUser_id"
+    as : "Users_and_songsHasManyUser_id",
+    onDelete : 'CASCADE'
 })
 
 Users_and_songs.hasMany(Songs,{
     sourceKey : "song_id",
     foreignKey : "id",
-    as : "Users_and_songsHasManySong_id"
+    as : "Users_and_songsHasManySong_id",
+    onDelete : 'CASCADE'
 })
 
 //혹시 안되면 아래껄로

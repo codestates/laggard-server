@@ -5,7 +5,7 @@ import { Sequelize, Model, DataTypes } from 'sequelize';
 interface testsAttributes {
     id : number | null;
     types_id : number;
-    age : number;
+    birth_year : number;
     sex : boolean;
 }
 
@@ -13,7 +13,7 @@ interface testsAttributes {
 export class Tests extends Model<testsAttributes> {
     public readonly id! : number;
     public types_id! : number;
-    public age! : number;
+    public birth_year! : number;
     public sex! : boolean;
 
     public readonly createdAt! : Date;
@@ -34,7 +34,7 @@ Tests.init(
                 key : "id"
             },
         },
-        age : {
+        birth_year : {
             type : DataTypes.INTEGER,
             allowNull : false
         },
