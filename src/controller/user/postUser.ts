@@ -26,11 +26,11 @@ export const postUser = {
                 email : req.body.email,
                 password : hashPassword,
                 nickname : req.body.nickname,
-                age : req.body.age,
+                birth_year : req.body.birth_year,
                 sex : req.body.sex
             })
             .then((result) => {
-                console.log("signup 성공! :", result);
+                console.log("signup 성공! :", /*result*/);
                 res.send({message : "Your sign-up completed"});
             })
             .catch(err => {
@@ -59,14 +59,14 @@ export const postUser = {
             let id = userInfo.id;
             let email = userInfo.email;
             let nickname = userInfo.nickname;
-            let age = userInfo.age;
+            let birth_year = userInfo.birth_year;
             let sex = userInfo.sex;
 
             let accessToken =  craeteToken({
                 id,
                 email,
                 nickname,
-                age,
+                birth_year,
                 sex,
                 iat : Math.floor(Date.now() / 1000) - 30,
                 exp :Math.floor(Date.now() / 1000) + (60 * 60)

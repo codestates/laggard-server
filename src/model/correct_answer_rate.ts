@@ -13,7 +13,7 @@ import { Songs } from './songs';
 interface Correct_answer_rateAttributes{
     id : number | null;
     songs_id : number;
-    age : number;
+    birth_year : number;
     sex : boolean;
     correct_answer : number;
     wrong_answer : number;
@@ -22,7 +22,7 @@ interface Correct_answer_rateAttributes{
 export class Correct_answer_rate extends Model<Correct_answer_rateAttributes>{
     public readonly id!: number;
     public songs_id! : number;
-    public age! : number;
+    public birth_year! : number;
     public sex! : boolean;
     public correct_answer! : number;
     public wrong_answer! : number;
@@ -54,7 +54,7 @@ Correct_answer_rate.init(
             },
             onDelete : "CASCADE"
         },
-        age : {
+        birth_year : {
             type : DataTypes.INTEGER,
             allowNull : false
         },

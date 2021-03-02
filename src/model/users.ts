@@ -19,7 +19,7 @@ interface UsersAttributes {
     email : string,
     password : string | null,
     nickname : string,
-    age : number,
+    birth_year : number,
     sex : boolean
 }
 
@@ -29,7 +29,7 @@ export class Users extends Model<UsersAttributes>{
     public email! : string;
     public password! : string;
     public nickname! : string;
-    public age! : number;
+    public birth_year! : number;
     public sex! : boolean;
 
     // timestamps!
@@ -73,7 +73,7 @@ Users.init(
             type : DataTypes.STRING(45),
             allowNull : false
         },
-        age : {
+        birth_year : {
             type : DataTypes.INTEGER,
             allowNull : false
         },
