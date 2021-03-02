@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "snappy-analog-305105",
+  "private_key_id": "471a3b0bf5b561ba64878e59dc929da573c53d27",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEuwIBADANBgkqhkiG9w0BAQEFAASCBKUwggShAgEAAoIBAQDUDHsdwAU6KGTR\nSkaTxZwSGAvxbZ69+uxyuTiA4JeSw33ovcv9rdOBL5as26EeuiWfzHYic7QeqljB\nVzkYLyfA5QE4dRwfBbxk9K34/7D8WCkfRSunwzHK88wtPy83Ilhwfw7g0rjbliNX\n/k09igl0cuFaSlf4AdjT3RVNIKCGncAdXup17yyuDqDyUUTAjVh77JacVKq7fMTu\nKA1qJtQgUAEP4cj4gvrpzRzzoIbdCOlpD7ZXKfcynKq+J2E0W8d5bQbwuMtmwYpF\nV2pBeEPRKU/CIADwvLf7otkwn4ChDGlttaI7i9e2P3EILBnorefoe+OPa6vzLAZE\nzhwzNlkrAgMBAAECggEACvG79vyeqHJGRdEOFHlqBTsNfr/4JfkJ9B/gLTKqUA5b\n9MO7ABRVKsFAhxps1e+omndMj5mmLcEABLaSQU/Jvvhy2C2fLnC22QUR55yWz2dj\nc/Q3fRijfMSZgKpWrwNMSj4cj/kARoEYwOVkqizyMPru66CTqr65qLGr9EefUWNB\n3yieHtPUAQONVrMacn1WzgqJ96xOXUdx8eqW4b0LBHRQ8bcoa6eh9WpgQX3VmvqN\n5HfpqB4OAc8KVvlKPMHJq7QHUL/3aflXDriHMnims9hRoc7otav4xJxzPxoCWHyd\nN2CHAmL2SSuFZPO1liR4rQ2Tt31lI12xM8qjIchIDQKBgQD0zBGQspsrG5l7lJt6\nkBMoVluRvyI7VD+JoHq0FE+rSTGDuS0MAFdK79/6yxsuusGLlXOFGNWnouTlokpD\nWeg5wcr3eQ02SETf462NjU4JLqOPC3yHXtOK57ZI+JV8s2HKuyZ1cpKc7dBdE9mM\nlGbSR7VABPjdNpsG+HE1KFw15QKBgQDdwL9FcjL7pJRgawjqzU9d3mXXP6QIlKA/\nLHy8y/NVE94qidKVx4o1LQZ5eCvNm+2djO+zJvcFcIhXyF/1K3gGPoYraVg+DK6d\nSJsSeiCHQ82ArOj9LYCzCBnVPQ2AM4aKkPmh8ytbZIIbhlikRcelnUZ8aETR7vJb\n77NNG59hzwKBgHd264+RCla0Rmff8yySCTdjRZbQDzWi/Mr+bUNasjKmKqrdANXd\niLxCai0rV52reG7VRaYLo6EGxuwmElXiF4mwQIwbIE6AYFRe+UCeWBn1D87sTR6H\nMXeVcwkTf2h25l+Yi8E/Y7t/93KlEEMh3Tf71MFka8sRLgDt19mYU7/dAoGBAJKs\nbtcsVfSEQ3AS2+8SpbBc7deVzJWwWN3wOwFVlTlszsIsLxHKzeumQGYPyklRHbXc\nBp/k4fbDHCuT6YRsoBLhQDVulGNWWBjIcWmjReiyPDckJ2dutXW1ogCdRVTKv+7f\nPX6VLNRignxaPD9LuGYexQR8oyiId92/ikUyRBWZAn8+tUAHZk0Flu2a0xGWJb8K\n/tp9cavivpCQL3O7JtMz8G5DWFELs7V75M6LDxzI3M2kyVCaUK/b9dvFGSSIxBW9\nzUEe4FkFqNwd9l6CtPeLFTBDZaKByhlYfudFWzImtwEQpPrC1Hwy62OMApkNtFZT\nDHZa9aipc+J2o6ppdbHI\n-----END PRIVATE KEY-----\n",
+  "client_email": "limjaehyeon@snappy-analog-305105.iam.gserviceaccount.com",
+  "client_id": "102942803218435030369",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/limjaehyeon%40snappy-analog-305105.iam.gserviceaccount.com"
+}
