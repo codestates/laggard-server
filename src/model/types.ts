@@ -7,6 +7,7 @@ interface typesAttributes {
     title : string;
     subtitle : string;
     description : string;
+    image : string;
 }
 
 export class Types extends Model<typesAttributes>{
@@ -14,6 +15,7 @@ export class Types extends Model<typesAttributes>{
     public readonly id! : number;
     public subtitle! : string;
     public description! : string;
+    public image! : string;
 
     public readonly createdAt! : Date;
     public readonly updatedAt! : Date;
@@ -35,6 +37,9 @@ Types.init(
         },
         description : {
             type : DataTypes.STRING(510)
+        },
+        image : {
+            type : DataTypes.STRING
         }
     },{
         sequelize,
