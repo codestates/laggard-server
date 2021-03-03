@@ -4,6 +4,7 @@ import { Sequelize } from 'sequelize/types';
 import { TupleType } from 'typescript';
 import { sequelize } from '../../model';
 import { Songs } from '../../model/songs';
+import { Tests } from '../../model/tests';
 import { Users } from '../../model/users';
 const { QueryTypes, Op } = require('sequelize');
 
@@ -29,7 +30,7 @@ const loadQuestion = async (year: number, numOfSongs: number) => {
       },
     },
     limit: numOfSongs - 6,
-    attributes: ['id', 'year', 'genre', 'lyrics'], // 'title', 'artist',
+    attributes: ['id', 'title', 'artist', 'year', 'genre', 'lyrics'], // 'title', 'artist',
     order: sequelize.random(),
   });
   let songData2 = await Songs.findAll({
@@ -39,7 +40,7 @@ const loadQuestion = async (year: number, numOfSongs: number) => {
       },
     },
     limit: 6,
-    attributes: ['id', 'year', 'genre', 'lyrics'], // 'title', 'artist',
+    attributes: ['id', 'title', 'artist', 'year', 'genre', 'lyrics'], // 'title', 'artist',
     order: sequelize.random(),
   });
   // console.log(`songData1: ${songData1}`);
@@ -56,10 +57,34 @@ export const getTestSheet = async (req: Request, res: Response) => {
 
   const birth_year: number = Number(req.query.birth_year);
   console.log(birth_year);
+  const sex: boolean = Boolean(req.query.sex);
+
+  if (!birth_year || !sex) {
+    res.sendStatus(400);
+  }
+  //* tests 테이블에 기록
+
+  // type _formForTest = {
+  //   birth_year: number;
+  //   sex: boolean;
+  // };
+
+  let testInfo = await Tests.create({
+    id: null,
+    types_id: null,
+    birth_year,
+    sex,
+  });
+  console.log(`testInfo: ${testInfo}`);
+
   let testData = await loadQuestion(birth_year, 20);
   console.log(Array.isArray(testData));
   if (testData) {
-    res.send({ data: testData, message: 'Ok' });
+    res
+      .status(200)
+      .send({ data: { id: testInfo.id, testData: testData }, message: 'Ok' });
+  } else {
+    res.status(404).send({ message: "There's no data" });
   }
   // console.log(testSheet[0]);
   // let songInfo = await Songs.findAll({
