@@ -8,5 +8,5 @@ ssh ubuntu@172.31.42.113 <<EOF
     npm install
     npm install -g pm2
     pm2 install typescript
-    pm2 restart ecosystem.config.js
+    pm2 restart ./src/index.ts
 EOF
