@@ -37,7 +37,7 @@ app.use('/tests', testRouter);
 app.use('/quiz', quizRouter);
 
 app.get('/',(req:Request, res: Response) => {
-  res.send({message : "Hello! Laggard-Project!"});
+  res.send("Hello! Laggard-Project!");
 })
 
 /**
