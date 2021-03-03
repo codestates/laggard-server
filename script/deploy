@@ -1,4 +1,4 @@
-#!/bin/shssh ubuntu
+#!/bin/sh
 ssh ubuntu@172.31.42.113 <<EOF
     cd ~/laggard-server
     git pull origin dev
