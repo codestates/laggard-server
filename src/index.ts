@@ -9,6 +9,7 @@ import { songRouter } from './routes/songRouter';
 import { scoreRouter } from './routes/scoreRouter';
 import { testRouter } from './routes/testRouter';
 import { sequelize } from './model';
+import { quizRouter } from './routes/quizRouter';
 
 dotenv.config();
 /**
@@ -33,6 +34,7 @@ app.use('/users', userRouter);
 app.use('/songs', songRouter);
 app.use('/score', scoreRouter);
 app.use('/tests', testRouter);
+app.use('/quiz', quizRouter);
 
 /**
  * Server Activation
