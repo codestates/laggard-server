@@ -22,6 +22,6 @@ const testRouter = express.Router();
 testRouter.get('/', controller.default.getTestSheet);
 
 //POST
-// testRouter.post('/signup',controller.default.postUser.signup);
+testRouter.post('/answer', controller.default.isAnswerCorrect);
 
 export { testRouter };
