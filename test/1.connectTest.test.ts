@@ -13,8 +13,8 @@ describe('연결 테스트',() => {
         done(err);
         return;
       }
-      expect(err).to.be.null;
-      expect(res.body.message).to.deep.equal('Hello! Laggard-Project!');
+      expect(err).to.be.null;      
+      expect(res.text).to.deep.equal('Hello! Laggard-Project!');
       done();
     })
   })
