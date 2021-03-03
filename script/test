@@ -1,0 +1,2 @@
+#!/bin/sh
+./node_modules/.bin/mocha -r node_modules/ts-node/register ./test/**.test.ts --sort --exit;
