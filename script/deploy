@@ -1,0 +1,12 @@
+#!/bin/sh
+ssh ubuntu@172.31.42.113 <<EOF
+    cd ~/laggard-server
+    git pull origin dev
+    curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh    | bash
+    . ~/.nvm/nvm.sh
+    nvm install 14.15.4
+    npm install
+    npm install -g pm2
+    pm2 install typescript
+    pm2 restart ./src/index.ts
+EOF
