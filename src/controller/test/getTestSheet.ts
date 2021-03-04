@@ -29,7 +29,7 @@ const loadQuestion = async (year: number, numOfSongs: number) => {
         [Op.between]: focusYear,
       },
     },
-    limit: numOfSongs - 6,
+    limit: numOfSongs - 3,
     attributes: ['id', 'title', 'artist', 'year', 'genre', 'lyrics'], // 'title', 'artist',
     order: sequelize.random(),
   });
@@ -39,7 +39,7 @@ const loadQuestion = async (year: number, numOfSongs: number) => {
         [Op.notBetween]: focusYear,
       },
     },
-    limit: 6,
+    limit: 3,
     attributes: ['id', 'title', 'artist', 'year', 'genre', 'lyrics'], // 'title', 'artist',
     order: sequelize.random(),
   });
@@ -64,11 +64,6 @@ export const getTestSheet = async (req: Request, res: Response) => {
   }
   //* tests 테이블에 기록
 
-  // type _formForTest = {
-  //   birth_year: number;
-  //   sex: boolean;
-  // };
-
   let testInfo = await Tests.create({
     id: null,
     types_id: null,
@@ -77,9 +72,11 @@ export const getTestSheet = async (req: Request, res: Response) => {
   });
   console.log(`testInfo: ${testInfo}`);
 
-  let testData = await loadQuestion(birth_year, 20);
-  console.log(Array.isArray(testData));
+  let testData = await loadQuestion(birth_year, 12);
   if (testData) {
+    // for(let question of testData) {
+    //   question['answer'] = '';
+    // }
     res
       .status(200)
       .send({ data: { id: testInfo.id, testData: testData }, message: 'Ok' });
