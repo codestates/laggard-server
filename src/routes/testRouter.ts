@@ -24,4 +24,7 @@ testRouter.get('/', controller.default.getTestSheet);
 //POST
 testRouter.post('/answer', controller.default.isAnswerCorrect);
 
+//POST
+testRouter.post('/result', controller.default.getTestResult);
+
 export { testRouter };

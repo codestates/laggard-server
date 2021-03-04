@@ -19,10 +19,16 @@ const processGenre = (str: string) => {
     return 'ballad';
   } else if (/.힙합/gi.test(str)) {
     console.log('힙합');
-    return '힙합';
+    return 'hiphop';
+  } else if (/.소울/gi.test(str)) {
+    return 'soul';
+  } else if (/.인디/gi.test(str)) {
+    return 'indie';
+  } else if (/락/gi.test(str)) {
+    return 'rock';
   } else {
     console.log('장르없음');
-    return '';
+    return 'etc';
   }
 };
 
@@ -30,28 +36,25 @@ export const isAnswerCorrect = async (req: Request, res: Response) => {
   console.log('isAnswerCorrect');
   console.log(req.body);
 
-  const id: number = req.body.songs_id;
+  const tests_id: number = req.body.tests_id;
+  const songs_id: number = req.body.songs_id;
   const submittedAnswer: string = req.body.answer;
 
-  if (id === undefined || submittedAnswer === undefined) {
+  if (songs_id === undefined || submittedAnswer === undefined) {
     res.sendStatus(400);
   }
 
-  // type _songData = {
-  //   id: number,
-  //   title: string,
-  //   year: number,
-  //   genre: string
-  // }
   let songData = await Songs.findOne({
-    where: { id },
+    where: { id: songs_id },
     attributes: ['id', 'title', 'year', 'genre'],
   });
-  console.log(songData);
+  console.log(`songData: ${songData}`);
 
   if (songData) {
-    //* 장르 판별
     let genre: string = songData.getDataValue('genre');
+    let year: number = songData.getDataValue('year');
+
+    //* 장르 판별
     genre = processGenre(genre);
     console.log(genre);
 
@@ -67,22 +70,48 @@ export const isAnswerCorrect = async (req: Request, res: Response) => {
     console.log(isCorrect);
 
     //* 장르 점수 넣기
-    // isCorrect ?
+    let genreInfo = await Genres.findOne({
+      where: { classification: genre },
+      attributes: ['id'],
+    });
+    if (genreInfo) {
+      let genres_id = genreInfo.id;
+      let TGInfo = await Tests_and_genres.create({
+        id: null,
+        tests_id,
+        genres_id,
+        right_or_wrong: isCorrect,
+      });
+    }
 
+    //* 시대 점수 넣기
+    let start_year: number;
+    if (year < 1990) {
+      start_year = 1980;
+    } else if (year < 2000) {
+      start_year = 1990;
+    } else if (year < 2010) {
+      start_year = 2000;
+    } else if (year < 2020) {
+      start_year = 2010;
+    } else {
+      start_year = 2020;
+    }
+
+    let periodInfo = await Periods.findOne({
+      where: { start_year },
+      attributes: ['id'],
+    });
+    if (periodInfo) {
+      let periods_id = periodInfo.id;
+      let TPInfo = await Tests_and_periods.create({
+        id: null,
+        tests_id,
+        periods_id,
+      });
+    }
     res.status(201).send({ data: isCorrect, message: 'Created.' });
+  } else {
+    res.sendStatus(400);
   }
-
-  // let title = songData.; // 'Frank Ocean (feat. SOLE)'
-  // console.log(title);
-  // title = title.match(/.+(?=\()/)[0].replace(/\s/gi, "") // 'FrankOcean'
-  // let re = new RegExp(title, 'i')
-  // let isCorrect = re.test(submittedAnswer);
-  // if (isCorrect) {
-  // 점수 올리기
-  //장르별 점수 기록
-  // } else {
-  //장르별 문제 푼 점수?
-  // }
-
-  // res.status(200).send({ data: isCorrect, message: 'Created.' });
 };
