@@ -22,9 +22,14 @@ const testRouter = express.Router();
 testRouter.get('/', controller.default.getTestSheet);
 
 //POST
-testRouter.post('/answer', controller.default.isAnswerCorrect);
+// testRouter.post('/answer', controller.default.isAnswerCorrect);
+
+//POST
+testRouter.post('/audio', controller.default.getAudio);
 
 //POST
 testRouter.post('/result', controller.default.getTestResult);
+
+
 
 export { testRouter };
