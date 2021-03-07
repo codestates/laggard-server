@@ -26,6 +26,8 @@ const processGenre = (str: string) => {
     return 'indie';
   } else if (/락/gi.test(str)) {
     return 'rock';
+  } else if (/.트로트/gi.test(str)) {
+    return 'trot';
   } else {
     console.log('장르없음');
     return 'etc';
@@ -78,12 +80,12 @@ export const isAnswerCorrect = async (req: Request, res: Response) => {
       });
       if (genreInfo) {
         let genres_id = genreInfo.id;
-        let TGInfo = await Tests_and_genres.create({
-          id: null,
-          tests_id,
-          genres_id,
-          right_or_wrong: isCorrect,
-        });
+        // let TGInfo = await Tests_and_genres.create({
+        //   id: null,
+        //   tests_id,
+        //   genres_id,
+        //   right_or_wrong: isCorrect,
+        // });
       }
 
       //* 시대 점수 넣기
@@ -106,11 +108,11 @@ export const isAnswerCorrect = async (req: Request, res: Response) => {
       });
       if (periodInfo) {
         let periods_id = periodInfo.id;
-        let TPInfo = await Tests_and_periods.create({
-          id: null,
-          tests_id,
-          periods_id,
-        });
+        // let TPInfo = await Tests_and_periods.create({
+        //   id: null,
+        //   tests_id,
+        //   periods_id,
+        // });
       }
       res.status(201).send({ data: isCorrect, message: 'Created.' });
     } else {

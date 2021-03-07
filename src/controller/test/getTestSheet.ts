@@ -6,7 +6,16 @@ import { sequelize } from '../../model';
 import { Songs } from '../../model/songs';
 import { Tests } from '../../model/tests';
 import { Users } from '../../model/users';
-const { QueryTypes, Op } = require('sequelize');
+import { QueryTypes, Op } from 'sequelize';
+
+interface TestData {
+  id: number;
+  title: string;
+  artist: string;
+  year: number;
+  genre: string;
+  lyrics: string;
+}
 
 // console.log(Op);
 const NUM_OF_QUESTION = 15;
@@ -47,7 +56,7 @@ const loadQuestion = async (year: number, numOfSongs: number) => {
     });
     // console.log(`songData1: ${songData1}`);
     // console.log(`songData2: ${songData2}`);
-    let songData: Array<object> = songData1.concat(songData2);
+    let songData: TestData[] = songData1.concat(songData2);
     console.log(`songData: ${songData}`);
 
     return songData;
@@ -68,34 +77,34 @@ export const getTestSheet = async (req: Request, res: Response) => {
     }
     //* tests 테이블에 기록
 
-    let testInfo = await Tests.create({
-      id: null,
-      types_id: null,
-      birth_year,
-      sex,
-    });
-    console.log(`testInfo: ${testInfo}`);
+    // let testInfo = await Tests.create({
+    //   id: null,
+    //   types_id: null,
+    //   birth_year,
+    //   sex,
+    //   // questions_set: '',
+    //   // answer_set: '',
+    // });
+    // console.log(`testInfo: ${testInfo}`);
 
     let testData = await loadQuestion(birth_year, NUM_OF_QUESTION);
     if (testData) {
-      // for(let question of testData) {
-      //   question['answer'] = '';
-      // }
+      let questions_set = testData.reduce((acc: string, cur: TestData) => {
+        return acc === '' ? String(cur.id) : acc + ',' + String(cur.id);
+      }, '');
+      let testInfo = await Tests.create({
+        id: null,
+        types_id: null,
+        birth_year,
+        sex,
+        questions_set,
+        // answer_set: '',
+      });
       res.status(200).send({ id: testInfo.id, testData: testData });
     } else {
       res.status(404).send({ message: "There's no data" });
     }
-    // console.log(testSheet[0]);
-    // let songInfo = await Songs.findAll({
-    //   where: { year: 2020 },
-    //   attributes: ['id', 'title', 'artist', 'genre', 'lyrics'],
-    //   limit: 5,
-    //   order: sequelize.random(),
-    // });
-    // console.log(songInfo);
   } catch {
     res.sendStatus(500);
   }
 };
-
-// 배열 만들자 ([80년대, 90년대, 00년대, 10~14, 15~])
