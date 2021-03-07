@@ -67,6 +67,7 @@ export const isAnswerCorrect = async (req: Request, res: Response) => {
       title = title.replace(/\s/gi, '');
       console.log(title);
       let re = new RegExp(title, 'i');
+      //!submittedAnswer도 띄어쓰기 가공해줘야함
       let isCorrect: boolean = re.test(submittedAnswer);
       console.log(isCorrect);
 
@@ -116,6 +117,6 @@ export const isAnswerCorrect = async (req: Request, res: Response) => {
       res.sendStatus(400);
     }
   } catch {
-    res.sendStatus(500)
+    res.sendStatus(500);
   }
 };
