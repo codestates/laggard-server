@@ -30,58 +30,115 @@ export const getTestResult = async (req: Request, res: Response) => {
     console.log('========getTestResult=========');
     console.log(req.body);
 
-    if (req.body) {
+    if (req.body.length > 0) {
       let answerArr: AnswerSheet[] = req.body;
+
       for (let answer of answerArr) {
         //* 장르 조인 테이블에 기록
-        const {
+        let {
           tests_id,
-          id,
-          title,
+          // id,
+          // title,
           year,
-          userAnswer,
+          // userAnswer,
           right_or_wrong,
         } = answer;
-        let genres_id: number | null | undefined = await processGenre(
-          answer.genre,
-        );
-
+        console.log(tests_id, year, right_or_wrong);
+        let genres_id: number | undefined = await processGenre(answer.genre);
+        // console.log(`genres_id: ${genres_id}`);
+        let periods_id: number | undefined = await processPeriod(year);
+        console.log(`periods_id: ${periods_id}`);
         let genreData = await Tests_and_genres.findOne({
-          where: { [Op.and]: [{ tests_id }, { genres_id }] },
-        });
+          where: { tests_id, genres_id },
+          attributes: ['id', 'correct', 'total', 'correct_answer_rate'],
+        }).catch();
+
+        let periodData = await Tests_and_periods.findOne({
+          where: { tests_id, periods_id },
+          attributes: ['id', 'correct', 'total', 'correct_answer_rate'],
+        }).catch();
+        console.log(periodData);
+
+        //! 장르별 테이블 기록
         if (typeof genres_id === 'number') {
           if (!genreData) {
-            let correct: number;
-            let wrong: number;
+            let correct: number = 0;
+            let total: number = 1;
             if (right_or_wrong === true) {
               correct = 1;
-              wrong = 0;
-            } else {
-              correct = 0;
-              wrong = 1;
             }
-            await Tests_and_genres.create({
+            let created = await Tests_and_genres.create({
               id: null,
               tests_id,
               genres_id,
-              correct: 1,
-              wrong: 0,
-              correct_answer_rate: correct / (correct + wrong),
+              correct,
+              total,
+              correct_answer_rate: correct / total,
             });
           } else {
-            let { correct, wrong } = genreData;
+            let id = genreData.getDataValue('id');
+            let correct = genreData.getDataValue('correct');
+            let total = genreData.getDataValue('total');
             let correct_answer_rate: number;
+            total++;
             if (right_or_wrong === true) {
               correct++;
-            } else {
-              wrong++;
             }
-            correct_answer_rate = correct / (correct + wrong);
-            await genreData.update({
+            correct_answer_rate = correct / total;
+            console.log(correct, total, correct_answer_rate);
+
+            let created = await genreData.update({
+              id,
+              tests_id,
+              genres_id,
               correct,
-              wrong,
+              total,
               correct_answer_rate,
             });
+            console.log(created);
+          }
+        }
+
+        //! 연대별 테이블 기록
+        if (typeof periods_id === 'number') {
+          if (!periodData) {
+            console.log('시대 데이터 없으면');
+            let correct: number = 0;
+            let total: number = 1;
+            if (right_or_wrong === true) {
+              correct = 1;
+            }
+            let created = await Tests_and_periods.create({
+              id: null,
+              tests_id,
+              periods_id,
+              correct,
+              total,
+              correct_answer_rate: correct / total,
+            });
+            console.log(created);
+          } else {
+            console.log('시대 데이터 있으면');
+            let id = periodData.getDataValue('id');
+            let correct = periodData.getDataValue('correct');
+            let total = periodData.getDataValue('total');
+            let correct_answer_rate: number;
+            total++;
+            if (right_or_wrong === true) {
+              correct++;
+            }
+            correct_answer_rate = correct / total;
+            console.log(correct, total, correct_answer_rate);
+
+            let created = await periodData.update({
+              id,
+              tests_id,
+              genres_id,
+              correct,
+              total,
+              correct_answer_rate,
+            });
+            console.log(created);
           }
         }
       }
@@ -93,6 +150,8 @@ export const getTestResult = async (req: Request, res: Response) => {
       if (typeInfo) {
         res.status(201).send({ result: typeInfo });
       }
+    } else {
+      res.sendStatus(404);
     }
   } catch {
     res.sendStatus(500);
@@ -100,26 +159,26 @@ export const getTestResult = async (req: Request, res: Response) => {
 };
 
 const processGenre = async (str: string) => {
-  let result: string = 'etc';
+  let result: string;
   if (/OST./gi.test(str)) {
     console.log('OST');
     result = 'OST';
-  } else if (/.댄스/gi.test(str)) {
+  } else if (/댄스/gi.test(str)) {
     console.log('댄스');
     result = 'dance';
-  } else if (/.발라드/gi.test(str)) {
+  } else if (/발라드/gi.test(str)) {
     console.log('발라드');
     result = 'ballad';
-  } else if (/.힙합/gi.test(str)) {
+  } else if (/힙합/gi.test(str)) {
     console.log('힙합');
     result = 'hiphop';
-  } else if (/.소울/gi.test(str)) {
+  } else if (/소울/gi.test(str)) {
     result = 'soul';
-  } else if (/.인디/gi.test(str)) {
+  } else if (/인디/gi.test(str)) {
     result = 'indie';
   } else if (/락/gi.test(str)) {
     result = 'rock';
-  } else if (/.트로트/gi.test(str)) {
+  } else if (/트로트/gi.test(str)) {
     result = 'trot';
   } else {
     console.log('장르없음');
@@ -133,7 +192,37 @@ const processGenre = async (str: string) => {
   if (genreData) {
     const id: number | null = genreData.getDataValue('id');
     console.log(result, id);
-    return id;
+    if (id) {
+      return id;
+    }
+  }
+};
+
+const processPeriod = async (num: number) => {
+  let result: number;
+  let count: number = 0;
+  console.log('processPeriod function');
+  if (num >= 2000) {
+    if (num < 2005) result = 2000;
+    else if (num < 2010) result = 2005;
+    else if (num < 2015) result = 2010;
+    else result = 2015;
+  } else {
+    if (num >= 1990) result = 1990;
+    else result = 1980;
+  }
+  // return result;
+  console.log(result);
+  let periodData = await Periods.findOne({
+    where: { start_year: result },
+    attributes: ['id', 'start_year'],
+  });
+  if (periodData) {
+    const id: number | null = periodData.getDataValue('id');
+    console.log(result, id);
+    if (id) {
+      return id;
+    }
   }
 };
 

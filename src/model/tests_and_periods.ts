@@ -7,7 +7,8 @@ interface tests_and_periodsAttributes {
   tests_id: number;
   periods_id: number;
   correct: number; // 맞힌 문제 수
-  wrong: number; // 틀린 문제 수
+  total: number; // 총 푼 문제 수
+  correct_answer_rate: number; // 정답률
 }
 
 export class Tests_and_periods extends Model<tests_and_periodsAttributes> {
@@ -15,7 +16,8 @@ export class Tests_and_periods extends Model<tests_and_periodsAttributes> {
   public tests_id!: number;
   public periods_id!: number;
   public correct!: number;
-  public wrong!: number;
+  public total!: number;
+  public correct_answer_rate!: number;
 
   public readonly created_at!: Date;
   public readonly updated_at!: Date;
@@ -48,8 +50,12 @@ Tests_and_periods.init(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    wrong: {
+    total: {
       type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    correct_answer_rate: {
+      type: DataTypes.DECIMAL(3, 2),
       allowNull: false,
     },
   },

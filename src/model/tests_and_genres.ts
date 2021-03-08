@@ -9,7 +9,7 @@ interface tests_and_genresAttributes {
   tests_id: number;
   genres_id: number;
   correct: number; // 맞힌 문제 수
-  wrong: number; // 틀린 문제 수
+  total: number; // 총 푼 문제 수
   correct_answer_rate: number; // 정답률
 }
 
@@ -18,7 +18,7 @@ export class Tests_and_genres extends Model<tests_and_genresAttributes> {
   public tests_id!: number;
   public genres_id!: number;
   public correct!: number;
-  public wrong!: number;
+  public total!: number;
   public correct_answer_rate!: number;
 }
 
@@ -51,7 +51,7 @@ Tests_and_genres.init(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    wrong: {
+    total: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
