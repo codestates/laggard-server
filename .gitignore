@@ -292,4 +292,7 @@ fabric.properties
 # https://plugins.jetbrains.com/plugin/12206-codestream
 .idea/codestream.xml
 
+# Google TTS
+My First Project-471a3b0bf5b5.json
+
 # End of https://www.toptal.com/developers/gitignore/api/react,macos,webstorm,node,dotenv,vscode,vim
