@@ -2,9 +2,13 @@
  * Required External Modules and Interfaces
  */
 import express, {Request, Response} from "express";
+import { Songs } from "../../model/songs";
 import { Users } from "../../model/users";
 import { getAudioBuffer } from "../../util/audio/audio";
 import { verifyToken } from "../../util/token/token";
+import { QueryTypes, Op } from 'sequelize';
+import { sequelize } from "../../model";
+import { getRandomLyrics } from "../../util/lyrics/lyrics";
 
  /**
  * Controller Definitions
@@ -13,6 +17,7 @@ import { verifyToken } from "../../util/token/token";
  export const getQuiz = {
    getAudio : async(req : Request, res : Response) => {
     console.log("getAudio!");
+    console.log("req : ", req.query);
     
     //여기서는 송 아이디를 받아 그 노래에서 랜덤으로 노래가사를 추출하고 오디오 버퍼로 바꿔서 response에 오디오 버퍼를 보내준다.
 
@@ -27,12 +32,53 @@ import { verifyToken } from "../../util/token/token";
     //일단 오디오 버퍼 보내는 거 연습
     let bufferData = await getAudioBuffer('레가드 프로젝트 화이팅!');
     res.send(bufferData);
-   },
-   getQuiz : async(req : Request, res: Response) => {
-     console.log("getQuiz!");
-     
-    // 1.여기서 조건(연도 별)에 맞게 랜덤으로 노래를 선택한다.
 
+    // let targetSong = await Songs.findOne({
+    //   where : {id : Number(req.query.songId)}
+    // })
+    
+    // console.log("targetSong : ", targetSong);
+    
+
+   },
+   songInfo : async(req : Request, res: Response) => {
+     console.log("getQuiz!");
+    // 1.여기서 조건(연도 별)에 맞게 랜덤으로 노래를 선택한다.
+    console.log("req.query : ", req.query);
+    let songAge = [Number(req.query.quizAge),Number(req.query.quizAge)+5];
+
+
+    Songs.findOne({
+      where : {
+        year : {
+          [Op.between] : songAge
+        }
+      },
+      order : sequelize.random()
+    })
+    .then(result => {
+      console.log("result : ", result);
+      console.log("result.id : ", result?.id);
+      console.log("result.title : ", result?.title);
+      let lyrics : string = '';
+
+      if(result) {
+        lyrics = getRandomLyrics(result?.lyrics);
+      }
+      
+      res.send({
+        songId : result?.id,
+        title : result?.title,
+        year : result?.year,
+        rank : result?.rank,
+        album_title : result?.album_title,
+        lyrics : lyrics,
+        artist : result?.artist
+      })
+    })
+    .catch(err => {
+      console.log("err : ", err);
+    })
 
 
    }
