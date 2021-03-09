@@ -11,14 +11,14 @@ import { Users } from './users';
 interface ScoresAttributes{
     id : number | null;
     user_id : number;
-    songs_year : Date;
+    songs_year : number;
     score : number;
 }
 
 export class Scores extends Model<ScoresAttributes>{
     public readonly id!: number;
     public user_id!: number;
-    public songs_year!: Date;
+    public songs_year!: number;
     public score ! : number;
 
     public readonly createdAt!: Date;
@@ -46,7 +46,7 @@ Scores.init(
             onDelete : 'CASCADE'
         },
         songs_year : {
-            type : DataTypes.DATE,
+            type : DataTypes.INTEGER,
             allowNull : false
         },
         score : {

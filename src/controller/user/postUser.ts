@@ -185,5 +185,21 @@ export const postUser = {
             console.log("Err in Social Signin");
             res.status(404).send({message : "Err in Social Signin"})
         })
+    },
+    withoutLogin : async(req : Request, res : Response) => {
+        console.log("withoutLogin!");
+        console.log(req.body);
+        let accessToken = craeteToken({
+            id:'guest',
+            sex : req.body.sex,
+            birth_year : req.body.birth_year,
+            iat : Math.floor(Date.now() / 1000) - 30,
+            exp :Math.floor(Date.now() / 1000) + (60 * 60)
+        })
+        res.send({
+            message : 'ok',
+            accessToken
+        })
+        
     }
 };

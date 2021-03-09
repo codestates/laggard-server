@@ -23,6 +23,7 @@ userRouter.post('/signout', controller.default.postUser.signout);
 userRouter.post('/signup/emailCheck', controller.default.postUser.checkEmailDuplicate);
 userRouter.post('/signup/social', controller.default.postUser.socialSignup);
 userRouter.post('/signin/social', controller.default.postUser.socialSignin);
+userRouter.post('/signin/withoutLogin', controller.default.postUser.withoutLogin);
 
 //PUT
 userRouter.put('/userinfo', controller.default.putUser.modify);
