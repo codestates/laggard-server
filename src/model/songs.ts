@@ -1,4 +1,5 @@
 import { Sequelize, DataTypes, Model, Optional } from 'sequelize';
+import { Correct_answer_rate } from './correct_answer_rate';
 import { sequelize } from './index';
 
 // These are all the attributes in the User model
@@ -102,3 +103,9 @@ Songs.init(
     updatedAt: 'updateTimestamp',
   },
 );
+
+Songs.hasMany(Correct_answer_rate,{
+  sourceKey : "id",
+  foreignKey : "songs_id",
+  as : 'songsHasManyCorrect_answer_rate'
+})

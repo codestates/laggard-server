@@ -16,6 +16,8 @@ const quizRouter = express.Router();
  //GET
  quizRouter.get('/songInfo',controller.getQuiz.songInfo);
 //  quizRouter.get('/audioFile', controller.getQuiz.getAudio);
+quizRouter.get('/recordResult',controller.getQuiz.recordResult);
+quizRouter.get('/submitScore',controller.getQuiz.submitScore);
  
  //POST
  quizRouter.post('/audioFile', controller.postQuiz.getAudio);

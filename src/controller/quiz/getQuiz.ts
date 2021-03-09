@@ -9,6 +9,9 @@ import { verifyToken } from "../../util/token/token";
 import { QueryTypes, Op } from 'sequelize';
 import { sequelize } from "../../model";
 import { getRandomLyrics } from "../../util/lyrics/lyrics";
+import { Correct_answer_rate } from "../../model/correct_answer_rate";
+import { Users_and_songs } from "../../model/users_and_songs";
+import { Scores } from "../../model/scores";
 
  /**
  * Controller Definitions
@@ -44,7 +47,6 @@ import { getRandomLyrics } from "../../util/lyrics/lyrics";
    songInfo : async(req : Request, res: Response) => {
      console.log("getQuiz!");
     // 1.여기서 조건(연도 별)에 맞게 랜덤으로 노래를 선택한다.
-    console.log("req.query : ", req.query);
     let songAge = [Number(req.query.quizAge),Number(req.query.quizAge)+5];
 
 
@@ -57,9 +59,7 @@ import { getRandomLyrics } from "../../util/lyrics/lyrics";
       order : sequelize.random()
     })
     .then(result => {
-      console.log("result : ", result);
-      console.log("result.id : ", result?.id);
-      console.log("result.title : ", result?.title);
+      
       let lyrics : string = '';
 
       if(result) {
@@ -79,8 +79,130 @@ import { getRandomLyrics } from "../../util/lyrics/lyrics";
     .catch(err => {
       console.log("err : ", err);
     })
+   },
+   recordResult : async(req : Request, res : Response) => {
+     console.log("@@@@@@@@@@@@@recordResult!");
+     
+     
+     let parseToken = verifyToken(String(req.headers.authorization))
 
+     type _Decode = {
+      id : any;
+      sex : boolean;
+      birth_year : number;
+    }
 
+    let {id,sex, birth_year} = parseToken as _Decode;
+    let {songs_id, correct} = req.query;
+     
+    
+    let recordCorrect : boolean
+    correct === 'true'?recordCorrect = true : recordCorrect = false;
+    
+     if(parseToken){
+      //로그인을 했을 때
+      if(id !=='guest'){
+        console.log("로그인 했을 때!!!!!!!!");
+        
+        let userRecord = await Users_and_songs.findOne({
+          where : {user_id : id, song_id : songs_id}
+        })
+        if(userRecord){
+          Users_and_songs.update({
+            right_or_wrong : recordCorrect
+          },{
+            where : {
+              user_id : userRecord.id
+            }
+          })
+        }else{
+          Users_and_songs.create({
+            right_or_wrong : recordCorrect,
+            id : null,
+            user_id : id,
+            song_id : Number(songs_id)
+          })
+        }
+
+      }
+      //로그인을 했든 안했든,,
+      
+       let info = await Correct_answer_rate.findOne({
+         where : {
+           sex,
+           birth_year,
+           songs_id
+         }
+       })
+       if(!info){
+         let correct_answer = recordCorrect? 1:0;
+         let wrong_answer = recordCorrect? 0:1;
+         Correct_answer_rate.create({
+           id:null,
+           songs_id : Number(songs_id),
+           birth_year,
+           sex,
+           correct_answer,
+           wrong_answer 
+         })
+         .then(() => {
+           res.send({message : "ok"});
+         })
+         .catch(() => {
+           res.status(404).send({message : "Err in record"})
+         })
+       }else{
+         let id = info.getDataValue('id');   
+         try{
+          if(recordCorrect){
+            Correct_answer_rate.increment({correct_answer : 1},{where : {id}});
+           }else{
+            Correct_answer_rate.increment({wrong_answer : 1}, {where : {id}});
+           }
+           res.send({message : "ok"})
+         }catch(e){
+          res.status(404).send({message : "Err in record"})
+         }      
+       }
+     }else{
+       res.status(409).send({message : "Invalid User"});
+     }
+   },
+   submitScore: async(req : Request, res : Response) => {
+      console.log("@@@submitScore@@@");
+      console.log("req.headers.authorization : ", req.headers.authorization);
+      console.log("req.query : ", req.query);
+      let parseToken = verifyToken(String(req.headers.authorization))
+
+      console.log("parsToken : ", parseToken);
+      type parseTokenProps = {
+        id:number;
+      }
+
+      let {id} = parseToken as parseTokenProps;
+
+      console.log("ID : ",  id);
+      console.log("ID : ", typeof id);
+      
+      if(parseToken && id){
+        Scores.create({
+          id :null,
+          user_id : id,
+          score : Number(req.query.totalScore),
+          songs_year : Number(req.query.songs_year)
+        })
+        .then(result => {
+          console.log("Score기록 성공 : ");
+          res.send({message : "ok"})
+        })
+        .catch(err => {
+          console.log("Score기록 실패 : ", err);
+          res.status(404).send({message : "Err in record score"})
+        })
+      }else{
+        res.status(409).send({message : "Invalid User"});
+      }
+      
    }
 
 

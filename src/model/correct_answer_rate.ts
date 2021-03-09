@@ -80,4 +80,3 @@ Correct_answer_rate.init(
     }
 )
 
-Correct_answer_rate.hasMany(Songs);
