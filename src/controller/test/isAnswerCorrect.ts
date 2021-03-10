@@ -63,7 +63,7 @@ export const isAnswerCorrect = async (req: Request, res: Response) => {
 
       //* 정답 판별
       let title: any = songData.getDataValue('title');
-      if (/\(/g.test(title)) {
+      while (/\(/g.test(title)) {
         title = title.match(/.+(?=\()/g)[0];
       }
       title = title.replace(/\s/gi, '');
