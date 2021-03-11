@@ -1,11 +1,17 @@
 import { Songs } from '../../model/songs';
 import { Genres } from '../../model/genres';
 import { Periods } from '../../model/periods';
-import { AnswerSheet, TestData, GenreScoreTable } from './interface';
+import {
+  AnswerSheet,
+  TestData,
+  GenreScoreTable,
+  ScoreSheet,
+} from './interface';
 import { QueryTypes, Op } from 'sequelize';
 import { sequelize } from '../../model';
 import e from 'express';
 import { totalmem } from 'node:os';
+import { TupleType } from 'typescript';
 
 export default {
   processGenre: async (str: string) => {
@@ -60,8 +66,6 @@ export default {
       if (num >= 1990) result = 1990;
       else result = 1980;
     }
-    // return result;
-    console.log(result);
     let periodData = await Periods.findOne({
       where: { start_year: result },
       attributes: ['id', 'start_year'],
@@ -107,6 +111,9 @@ export default {
           year: {
             [Op.between]: [yearArr[1], yearArr[2]],
           },
+          rank: {
+            [Op.lte]: 30, //30위 이내
+          },
         },
         limit: quotaArr[0],
         attributes: ['id', 'title', 'artist', 'year', 'genre', 'lyrics'], // 'title', 'artist',
@@ -117,6 +124,9 @@ export default {
           year: {
             [Op.gt]: yearArr[2],
           },
+          rank: {
+            [Op.lte]: 30, //30위 이내
+          },
         },
         limit: quotaArr[1], //0개도 나오나?
         attributes: ['id', 'title', 'artist', 'year', 'genre', 'lyrics'], // 'title', 'artist',
@@ -126,6 +136,9 @@ export default {
         where: {
           year: {
             [Op.between]: [yearArr[0], yearArr[1] - 1],
+          },
+          rank: {
+            [Op.lte]: 30, //30위 이내
           },
         },
         limit: quotaArr[2],
@@ -153,6 +166,7 @@ export default {
     else return ['L', 0.6];
   },
   classifyGenreType: (arr: AnswerSheet[], scoreType: [string, number]) => {
+    //! 아직 구현 못 함 -> DB에서 조회하는걸로?
     //* Neutral, OST, Dance, Ballad, Hiphop
     let D: AnswerSheet[] = arr.filter((answer) => answer.genre === 'dance');
     let O: AnswerSheet[] = arr.filter((answer) => answer.genre === 'OST');
@@ -177,6 +191,58 @@ export default {
     table.B.total = B.length;
     table.B.correct = B.filter((el) => el.right_or_wrong === true).length;
     table.B.correct_answer_rate = table.B.correct / table.B.total;
+    console.table(table);
+  },
+  isTrendy: (arr: AnswerSheet[], yr: number, grade: string) => {
+    let benchmark: number;
+    let result: number | null;
+    if (yr >= 1992) {
+      benchmark = 2016;
+    } else if (yr > 1982) {
+      benchmark = 2013;
+    } else {
+      benchmark = 2010;
+    }
+
+    let correct = arr.filter(
+      (el) => el.year >= benchmark && el.right_or_wrong === true,
+    ).length;
+    let length = arr.filter((el) => el.year >= benchmark).length;
+    if (length > 0) {
+      result = correct / length;
+    } else {
+      result = null;
+    }
+
+    if (!result) return false;
+    else if (grade === 'E') return result >= 0.6;
+    else if (grade === 'H') return result >= 0.4;
+    else if (grade === 'L') return result >= 0.2;
+    else return false;
+  },
+  processResultType: (str: string) => {
+    let first: string = str[0];
+    let second: string = str[1];
+    let third: string = str[2];
+    if (first === 'B') {
+      if (second === 'O' || second === 'H') {
+        second = 'N';
+      }
+    } else if (first === 'E') {
+      if (second === 'O') {
+        second = 'N';
+      }
+    } else if (first === 'H') {
+      if (second !== 'O') {
+        second = 'N';
+      }
+    } else {
+      second = 'N';
+      third = 'B';
+    }
+    let result = first + second + third;
+    console.log(`processResultType: ${result}`);
+    return result;
   },
 };
 

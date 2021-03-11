@@ -12,7 +12,6 @@ import func from './processFuncs';
 import { TestData } from './interface';
 
 // console.log(Op);
-const NUM_OF_QUESTION = 15;
 
 export const getTestSheet = async (req: Request, res: Response) => {
   try {

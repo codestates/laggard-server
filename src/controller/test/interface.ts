@@ -17,7 +17,7 @@ export interface AnswerSheet {
   right_or_wrong: boolean;
 }
 
-interface ScoreSheet {
+export interface ScoreSheet {
   correct?: number;
   total?: number;
   correct_answer_rate?: number;
