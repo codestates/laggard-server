@@ -6,20 +6,16 @@ import { Tests_and_genres } from '../../model/tests_and_genres';
 import { Periods } from '../../model/periods';
 import { Types } from '../../model/types';
 import { Tests_and_periods } from '../../model/tests_and_periods';
-import { ModuleResolutionKind } from 'typescript';
+import { isIntersectionTypeNode, ModuleResolutionKind } from 'typescript';
 import { QueryTypes, Op } from 'sequelize';
 import { Test } from 'mocha';
 import { count } from 'node:console';
-
-type AnswerSheet = {
-  tests_id: number;
-  id: number;
-  title: string;
-  year: number;
-  genre: string;
-  userAnswer: string;
-  right_or_wrong: boolean;
-};
+// const func = require('./processFuncs');
+import func from './processFuncs';
+import { AnswerSheet } from './interface';
+import { Tests } from '../../model/tests';
+import { getAttributes } from 'sequelize-typescript';
+import { sequelize } from '../../model';
 
 type GenreData = {
   id: number;
@@ -28,15 +24,16 @@ type GenreData = {
 export const getTestResult = async (req: Request, res: Response) => {
   try {
     console.log('========getTestResult=========');
-    console.log(req.body);
+    // console.log(req.body);
 
     if (req.body.length > 0) {
       let answerArr: AnswerSheet[] = req.body;
+      let tests_id = req.body[0].tests_id;
+      console.log(`tests_id: ${tests_id}`);
 
       for (let answer of answerArr) {
         //* 장르 조인 테이블에 기록
         let {
-          tests_id,
           // id,
           // title,
           year,
@@ -44,14 +41,17 @@ export const getTestResult = async (req: Request, res: Response) => {
           right_or_wrong,
         } = answer;
         console.log(tests_id, year, right_or_wrong);
-        let genres_id: number | undefined = await processGenre(answer.genre);
+        let genres_id: number | undefined = await func.processGenre(
+          answer.genre,
+        );
         // console.log(`genres_id: ${genres_id}`);
-        let periods_id: number | undefined = await processPeriod(year);
+        let periods_id: number | undefined = await func.processPeriod(year);
         console.log(`periods_id: ${periods_id}`);
         let genreData = await Tests_and_genres.findOne({
           where: { tests_id, genres_id },
           attributes: ['id', 'correct', 'total', 'correct_answer_rate'],
         }).catch();
+        console.log(genreData);
 
         let periodData = await Tests_and_periods.findOne({
           where: { tests_id, periods_id },
@@ -61,7 +61,9 @@ export const getTestResult = async (req: Request, res: Response) => {
 
         //! 장르별 테이블 기록
         if (typeof genres_id === 'number') {
+          console.log('장르 테이블에 기록하기');
           if (!genreData) {
+            console.log('테스트-장르 새 컬럼 생성');
             let correct: number = 0;
             let total: number = 1;
             if (right_or_wrong === true) {
@@ -75,6 +77,7 @@ export const getTestResult = async (req: Request, res: Response) => {
               total,
               correct_answer_rate: correct / total,
             });
+            console.log(created);
           } else {
             let id = genreData.getDataValue('id');
             let correct = genreData.getDataValue('correct');
@@ -101,6 +104,7 @@ export const getTestResult = async (req: Request, res: Response) => {
 
         //! 연대별 테이블 기록
         if (typeof periods_id === 'number') {
+          console.log('연대 정보 테이블에 기록하기');
           if (!periodData) {
             console.log('시대 데이터 없으면');
             let correct: number = 0;
@@ -143,12 +147,83 @@ export const getTestResult = async (req: Request, res: Response) => {
         }
       }
 
+      //* type 찾기
+      //*
+      let totalScore = func.calculateTotalRate(answerArr);
+
+      let scoreType = func.classifyScoreType(totalScore);
+      let grade = scoreType[0];
+      let criteria = scoreType[1];
+      let genreIndex: string = 'N';
+      console.log(grade);
+      let birthYear: number;
+      let trendIdx: string = 'A';
+      let testDataForYear = await Tests.findOne({
+        where: { id: tests_id },
+        attributes: ['id', 'birth_year'],
+      });
+      console.log(testDataForYear);
+      if (testDataForYear) {
+        birthYear = testDataForYear.getDataValue('birth_year');
+        if (grade !== 'B' && typeof grade === 'string') {
+          let ox = func.isTrendy(answerArr, birthYear, grade);
+          trendIdx = ox ? 'A' : 'B';
+        }
+      }
+      console.log('==============================================');
+      console.log(totalScore, scoreType, grade, trendIdx);
+      console.log('==============================================');
+
+      //* 장르 지표 찾자
+      let genreDataForIdx = await Tests_and_genres.findAll({
+        where: {
+          tests_id,
+          total: { [Op.gte]: 4 },
+          correct_answer_rate: { [Op.gt]: criteria },
+        },
+        attributes: [
+          'id',
+          'tests_id',
+          'genres_id',
+          'total',
+          'correct_answer_rate',
+        ],
+        order: [
+          ['correct_answer_rate', 'DESC'],
+          ['total', 'DESC'],
+        ],
+      });
+      if (genreDataForIdx.length > 0) {
+        console.log(genreDataForIdx);
+        let id = genreDataForIdx[0].getDataValue('genres_id');
+        let temp = await Genres.findOne({
+          where: { id },
+          attributes: ['id', 'classification'],
+        });
+        if (temp) {
+          let genre = temp.getDataValue('classification');
+          if (genre === 'dance') genreIndex = 'D';
+          else if (genre === 'OST') genreIndex = 'O';
+          else if (genre === 'ballad') genreIndex = 'B';
+          else if (genre === 'hiphop') genreIndex = 'H';
+        }
+      }
+      let type = grade + genreIndex + trendIdx;
+      console.log(`type: ${type}`);
+      let adjustedType = func.processResultType(type);
+      console.log(`adjusted type: ${adjustedType}`);
+
       let typeInfo = await Types.findOne({
-        where: { id: 1 },
+        where: { type: adjustedType },
         attributes: ['id', 'title', 'subtitle', 'description', 'image'],
       });
+      console.log(typeInfo);
       if (typeInfo) {
+        let typeId = typeInfo.getDataValue('id');
+        await Tests.update({ types_id: typeId }, { where: { id: tests_id } });
         res.status(201).send({ result: typeInfo });
+      } else {
+        res.status(404).send('There is no type.');
       }
     } else {
       res.sendStatus(404);
@@ -157,210 +232,3 @@ export const getTestResult = async (req: Request, res: Response) => {
     res.sendStatus(500);
   }
 };
-
-const processGenre = async (str: string) => {
-  let result: string;
-  if (/OST./gi.test(str)) {
-    console.log('OST');
-    result = 'OST';
-  } else if (/댄스/gi.test(str)) {
-    console.log('댄스');
-    result = 'dance';
-  } else if (/발라드/gi.test(str)) {
-    console.log('발라드');
-    result = 'ballad';
-  } else if (/힙합/gi.test(str)) {
-    console.log('힙합');
-    result = 'hiphop';
-  } else if (/소울/gi.test(str)) {
-    result = 'soul';
-  } else if (/인디/gi.test(str)) {
-    result = 'indie';
-  } else if (/락/gi.test(str)) {
-    result = 'rock';
-  } else if (/트로트/gi.test(str)) {
-    result = 'trot';
-  } else {
-    console.log('장르없음');
-    result = 'etc';
-  }
-  // return result;
-  let genreData = await Genres.findOne({
-    where: { classification: result },
-    attributes: ['id'],
-  });
-  if (genreData) {
-    const id: number | null = genreData.getDataValue('id');
-    console.log(result, id);
-    if (id) {
-      return id;
-    }
-  }
-};
-
-const processPeriod = async (num: number) => {
-  let result: number;
-  let count: number = 0;
-  console.log('processPeriod function');
-  if (num >= 2000) {
-    if (num < 2005) result = 2000;
-    else if (num < 2010) result = 2005;
-    else if (num < 2015) result = 2010;
-    else result = 2015;
-  } else {
-    if (num >= 1990) result = 1990;
-    else result = 1980;
-  }
-  // return result;
-  console.log(result);
-  let periodData = await Periods.findOne({
-    where: { start_year: result },
-    attributes: ['id', 'start_year'],
-  });
-  if (periodData) {
-    const id: number | null = periodData.getDataValue('id');
-    console.log(result, id);
-    if (id) {
-      return id;
-    }
-  }
-};
-
-// 재료
-// const temp = [
-//   {
-//     tests_id: 1,
-//     id: 119,
-//     title: '이 노래가 클럽에서 나온다면',
-//     year: 2019,
-//     genre: '가요 / 인디',
-//     userAnswer: '',
-//     right_or_wrong: false,
-//   },
-//   {
-//     tests_id: 1,
-//     id: 22,
-//     title: '봄날',
-//     year: 2020,
-//     genre: '가요 / 댄스',
-//     userAnswer: '',
-//     right_or_wrong: false,
-//   },
-//   {
-//     tests_id: 1,
-//     id: 560,
-//     title: '모르나봐',
-//     year: 2015,
-//     genre: 'OST / 드라마',
-//     userAnswer: '',
-//     right_or_wrong: false,
-//   },
-//   {
-//     tests_id: 1,
-//     id: 828,
-//     title: 'Pandora',
-//     year: 2012,
-//     genre: '가요 / 댄스',
-//     userAnswer: '',
-//     right_or_wrong: false,
-//   },
-//   {
-//     tests_id: 1,
-//     id: 130,
-//     title: '술이 달다 (Feat. Crush)',
-//     year: 2019,
-//     genre: '힙합',
-//     userAnswer: '',
-//     right_or_wrong: false,
-//   },
-//   {
-//     tests_id: 1,
-//     id: 1025,
-//     title: 'Bad Girl Good Girl',
-//     year: 2010,
-//     genre: '가요 / 댄스',
-//     userAnswer: '',
-//     right_or_wrong: false,
-//   },
-//   {
-//     tests_id: 1,
-//     id: 28,
-//     title: '밤편지',
-//     year: 2020,
-//     genre: '가요 / 발라드',
-//     userAnswer: '',
-//     right_or_wrong: false,
-//   },
-//   {
-//     tests_id: 1,
-//     id: 299,
-//     title: 'BLUE MOON (Prod. by GroovyRoom)',
-//     year: 2017,
-//     genre: '가요 / 댄스',
-//     userAnswer: '',
-//     right_or_wrong: false,
-//   },
-//   {
-//     tests_id: 1,
-//     id: 514,
-//     title: '오빠차',
-//     year: 2015,
-//     genre: '가요 / 랩/힙합',
-//     userAnswer: '',
-//     right_or_wrong: false,
-//   },
-//   {
-//     tests_id: 1,
-//     id: 735,
-//     title: '갖고놀래 (Feat. 다이나믹 듀오)',
-//     year: 2013,
-//     genre: '소울',
-//     userAnswer: '',
-//     right_or_wrong: false,
-//   },
-//   {
-//     tests_id: 1,
-//     id: 76,
-//     title: '작은 것들을 위한 시 (Boy With Luv) (Feat. Halsey)',
-//     year: 2020,
-//     genre: '댄스',
-//     userAnswer: '',
-//     right_or_wrong: false,
-//   },
-//   {
-//     tests_id: 1,
-//     id: 316,
-//     title: '남이 될 수 있을까',
-//     year: 2017,
-//     genre: '가요 / 인디',
-//     userAnswer: '',
-//     right_or_wrong: false,
-//   },
-//   {
-//     tests_id: 1,
-//     id: 2709,
-//     title: '그대가 나에게',
-//     year: 1991,
-//     genre: '가요 / 발라드',
-//     userAnswer: '',
-//     right_or_wrong: false,
-//   },
-//   {
-//     tests_id: 1,
-//     id: 2785,
-//     title: '그녀를 만나는 곳 100m 전',
-//     year: 1990,
-//     genre: '가요 / 전체',
-//     userAnswer: '',
-//     right_or_wrong: false,
-//   },
-//   {
-//     tests_id: 1,
-//     id: 2852,
-//     title: '눈물나는 날에는',
-//     year: 1989,
-//     genre: '가요 / 발라드',
-//     userAnswer: '',
-//     right_or_wrong: false,
-//   },
-// ];
