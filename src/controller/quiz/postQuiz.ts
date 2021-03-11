@@ -19,9 +19,13 @@ import { getRandomLyrics } from "../../util/lyrics/lyrics";
     console.log("getAudio!");
     console.log("req : ", req.body);
     console.log("req.body.lyrics", req.body.lyrics);
+    try{
+      let audioBuffer = await getAudioBuffer(req.body.lyrics);
+      res.send(audioBuffer);
+    }catch(e){
+      res.status(404).send({message:"Err in get Audio"});
+    }
     
-    let audioBuffer = await getAudioBuffer(req.body.lyrics);
-    res.send(audioBuffer);
 
    }
 }

@@ -28,5 +28,8 @@ userRouter.post('/signin/withoutLogin', controller.default.postUser.withoutLogin
 //PUT
 userRouter.put('/userinfo', controller.default.putUser.modify);
 
+//DELETE
+userRouter.delete('/unregister', controller.default.deleteUser.unregisterUser);
+
  
  export {userRouter};

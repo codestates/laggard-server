@@ -123,13 +123,16 @@ export const postUser = {
                     console.log("Social - Sign up 아이디 중복");
                     res.status(409).send({message : "This email is already registered"})
                 }else{
+
+                    let hashPassword = SHA256(result.data.response.id + 'naver',{cfg : process.env.CRYPTO_PASSWORD}).toString();
+
                     await Users.create({
                         id : null,
                         email : result.data.response.email,
                         sex : result.data.response.gender === 'M',
                         nickname : result.data.response.name,
                         birth_year : result.data.response.birthyear,
-                        password : null
+                        password : hashPassword
                     })
                     .then(() => {
                         console.log("Social Signup 성공!");
@@ -155,7 +158,7 @@ export const postUser = {
         .then(async (result) => {
             console.log("Result : ", result.data);
             let userInfo = await Users.findOne({
-                where : {email : result.data.response.email}
+                where : {email : result.data.response.email, password : SHA256(result.data.response.id + 'naver',{cfg : process.env.CRYPTO_PASSWORD}).toString()}
             })
 
             if(userInfo){
