@@ -17,7 +17,7 @@ import { Scores } from './scores';
 interface UsersAttributes {
     id: number | null;
     email : string,
-    password : string | null,
+    password : string,
     nickname : string,
     birth_year : number,
     sex : boolean
@@ -67,7 +67,7 @@ Users.init(
         },
         password : {
             type : DataTypes.STRING(100),
-            allowNull : true
+            allowNull : false
         },
         nickname : {
             type : DataTypes.STRING(45),

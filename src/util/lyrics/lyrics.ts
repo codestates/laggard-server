@@ -4,7 +4,7 @@ const getRandomLyrics = (lyrics : string) => {
   // console.log("###",lyricsArr);
   console.log("length : ", lyricsArr.length);
   
-  let random = Math.floor(Math.random() * (lyricsArr.length-10)) + 1; 
+  let random = Math.floor(Math.random() * (lyricsArr.length-20)) + 1; 
   console.log("random : ",random);
   // let randomLyrics = lyricsArr[random].concat
   let randomLyrics:string = '';

@@ -47,7 +47,12 @@ import { Scores } from "../../model/scores";
    songInfo : async(req : Request, res: Response) => {
      console.log("getQuiz!");
     // 1.여기서 조건(연도 별)에 맞게 랜덤으로 노래를 선택한다.
-    let songAge = [Number(req.query.quizAge),Number(req.query.quizAge)+5];
+    let songAge : number[];
+    if(Number(req.query.quizAge) === 1){
+      songAge = [1980,2021];
+    }else{
+      songAge = [Number(req.query.quizAge),Number(req.query.quizAge)+4];
+    }
 
 
     Songs.findOne({
@@ -78,6 +83,7 @@ import { Scores } from "../../model/scores";
     })
     .catch(err => {
       console.log("err : ", err);
+      res.status(404).send({message : "Err in get SongInfo"})
     })
    },
    recordResult : async(req : Request, res : Response) => {
