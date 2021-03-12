@@ -13,7 +13,6 @@ interface Rank {
 
 export const getTotalRank = async (req: Request, res: Response) => {
   try {
-    console.log('getTotalRank');
     let rankData: any = await sequelize.query(
       'SELECT `user_id`, sum(`score`) AS `total`, Users.nickname FROM `Scores` AS `Scores` LEFT JOIN `Users` on Users.id=Scores.user_id GROUP BY `user_id` ORDER BY max(`total`) DESC LIMIT 10;',
       { type: QueryTypes.SELECT },

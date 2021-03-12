@@ -36,9 +36,6 @@ const processGenre = (str: string) => {
 
 export const isAnswerCorrect = async (req: Request, res: Response) => {
   try {
-    console.log('isAnswerCorrect');
-    console.log(req.body);
-
     const tests_id: number = req.body.tests_id;
     const songs_id: number = req.body.songs_id;
     const submittedAnswer: string = req.body.answer;
@@ -51,7 +48,6 @@ export const isAnswerCorrect = async (req: Request, res: Response) => {
       where: { id: songs_id },
       attributes: ['id', 'title', 'year', 'genre'],
     });
-    console.log(`songData: ${songData}`);
 
     if (songData) {
       let genre: string = songData.getDataValue('genre');
@@ -67,11 +63,9 @@ export const isAnswerCorrect = async (req: Request, res: Response) => {
         title = title.match(/.+(?=\()/g)[0];
       }
       title = title.replace(/\s/gi, '');
-      console.log(title);
       let re = new RegExp(title, 'i');
       //!submittedAnswer도 띄어쓰기 가공해줘야함
       let isCorrect: boolean = re.test(submittedAnswer);
-      console.log(isCorrect);
 
       //* 장르 점수 넣기
       let genreInfo = await Genres.findOne({
