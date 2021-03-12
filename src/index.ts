@@ -53,18 +53,18 @@ app.get('/',(req:Request, res: Response) => {
 const visitCounter = (req : Request, res : Response, next : NextFunction) => {
   console.log("cookie : ", req.cookies['laggard-visitCounter']);
 
-  if(!req.cookies['laggard-visitCounter']&& req.method!=='OPTIONS'){
-    console.log("Visit Counter!");
+  // if(!req.cookies['laggard-visitCounter']&& req.method!=='OPTIONS'){
+  //   console.log("Visit Counter!");
     
-    res.cookie("laggard-visitCounter","laggard-visit-Counter-Tool-Cookie",{expires : new Date(Date.now() + 24 * 3600000)});
-    VisitCounter.increment({counter : 1},{where : {id : 1}})
-    .then(result => {
-      console.log("visitCounter + 1");
-    })
-    .catch(err => {
-      console.log("Err in visitCounter");
-    })
-  }
+  //   res.cookie("laggard-visitCounter","laggard-visit-Counter-Tool-Cookie",{expires : new Date(Date.now() + 24 * 3600000)});
+  //   VisitCounter.increment({counter : 1},{where : {id : 1}})
+  //   .then(result => {
+  //     console.log("visitCounter + 1");
+  //   })
+  //   .catch(err => {
+  //     console.log("Err in visitCounter");
+  //   })
+  // }
   
   next();
 }
