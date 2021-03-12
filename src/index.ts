@@ -10,6 +10,9 @@ import { scoreRouter } from './routes/scoreRouter';
 import { testRouter } from './routes/testRouter';
 import { sequelize } from './model';
 import { quizRouter } from './routes/quizRouter';
+import { countRouter } from './routes/countRouter';
+import { VisitCounter } from './model/visitCounter';
+import cookieParser from 'cookie-parser';
 
 dotenv.config();
 /**
@@ -22,11 +25,17 @@ const app = express();
 /**
  *  App Configuration   //middleware
  */
-app.use(cors());
+app.use(cors({
+  origin : "http://localhost:3000",
+  preflightContinue : true,
+  credentials : true
+}));
+app.use(cookieParser());
 app.use(express.json());
 app.use((req: Request, res: Response, next: NextFunction) => {
   console.log(`Request Occur! ${req.method}, ${req.url}`);
-  next();
+  visitCounter(req, res, next);
+  // next();
 });
 // 라우터 설정
 // app.use('/')
@@ -35,10 +44,30 @@ app.use('/songs', songRouter);
 app.use('/score', scoreRouter);
 app.use('/tests', testRouter);
 app.use('/quiz', quizRouter);
+app.use('/counter', countRouter);
 
 app.get('/',(req:Request, res: Response) => {
   res.send("Hello! Laggard-Project!");
 })
+
+const visitCounter = (req : Request, res : Response, next : NextFunction) => {
+  console.log("cookie : ", req.cookies['laggard-visitCounter']);
+
+  if(!req.cookies['laggard-visitCounter']&& req.method!=='OPTIONS'){
+    console.log("Visit Counter!");
+    
+    res.cookie("laggard-visitCounter","laggard-visit-Counter-Tool-Cookie",{expires : new Date(Date.now() + 24 * 3600000)});
+    VisitCounter.increment({counter : 1},{where : {id : 1}})
+    .then(result => {
+      console.log("visitCounter + 1");
+    })
+    .catch(err => {
+      console.log("Err in visitCounter");
+    })
+  }
+  
+  next();
+}
 
 /**
  * Server Activation
