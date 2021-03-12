@@ -29,9 +29,3 @@ export interface GenreScoreTable {
   H: ScoreSheet;
   B: ScoreSheet;
 }
-
-// export interface Quota {
-//   first: number;
-//   second: number;
-//   third: number;
-// }
