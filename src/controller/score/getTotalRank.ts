@@ -10,6 +10,7 @@ interface Rank {
   total: string;
   nickname: string;
 }
+//
 
 export const getTotalRank = async (req: Request, res: Response) => {
   try {
