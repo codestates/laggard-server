@@ -26,7 +26,7 @@ const app = express();
  *  App Configuration   //middleware
  */
 app.use(cors({
-  origin : "http://localhost:3000",
+  origin : ["http://localhost:3000","https://laggard.ga"],
   preflightContinue : true,
   credentials : true
 }));
