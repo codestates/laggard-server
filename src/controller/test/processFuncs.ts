@@ -77,7 +77,7 @@ export default {
     } else if (yr < 1976) {
       result = [1980, 1989, 2004];
     } else {
-      result = [yr + 4, yr + 13, yr + 28 < 2021 ? yr + 28 : 2021];
+      result = [yr + 4, yr + 13, yr + 28 < 2021 ? yr + 28 : 2020];
     }
     return result;
   },
@@ -216,7 +216,7 @@ export default {
         second = 'N';
       }
     } else if (first === 'E') {
-      if (second === 'O') {
+      if (second === 'O' || third === 'B') {
         second = 'N';
       }
     } else if (first === 'H') {
