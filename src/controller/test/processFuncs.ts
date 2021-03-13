@@ -17,16 +17,12 @@ export default {
   processGenre: async (str: string) => {
     let result: string;
     if (/OST./gi.test(str)) {
-      console.log('OST');
       result = 'OST';
     } else if (/댄스/gi.test(str)) {
-      console.log('댄스');
       result = 'dance';
     } else if (/발라드/gi.test(str)) {
-      console.log('발라드');
       result = 'ballad';
     } else if (/힙합/gi.test(str)) {
-      console.log('힙합');
       result = 'hiphop';
     } else if (/소울/gi.test(str)) {
       result = 'soul';
@@ -37,7 +33,6 @@ export default {
     } else if (/트로트/gi.test(str)) {
       result = 'trot';
     } else {
-      console.log('장르없음');
       result = 'etc';
     }
     // return result;
@@ -47,7 +42,6 @@ export default {
     });
     if (genreData) {
       const id: number | null = genreData.getDataValue('id');
-      console.log(result, id);
       if (id) {
         return id;
       }
@@ -56,7 +50,6 @@ export default {
   processPeriod: async (num: number) => {
     let result: number;
     let count: number = 0;
-    console.log('processPeriod function');
     if (num >= 2000) {
       if (num < 2005) result = 2000;
       else if (num < 2010) result = 2005;
@@ -72,7 +65,6 @@ export default {
     });
     if (periodData) {
       const id: number | null = periodData.getDataValue('id');
-      console.log(result, id);
       if (id) {
         return id;
       }
@@ -85,7 +77,7 @@ export default {
     } else if (yr < 1976) {
       result = [1980, 1989, 2004];
     } else {
-      result = [yr + 4, yr + 13, yr + 28 < 2021 ? yr + 28 : 2021];
+      result = [yr + 4, yr + 13, yr + 28 < 2021 ? yr + 28 : 2020];
     }
     return result;
   },
@@ -128,7 +120,7 @@ export default {
             [Op.lte]: 30, //30위 이내
           },
         },
-        limit: quotaArr[1], //0개도 나오나?
+        limit: quotaArr[1],
         attributes: ['id', 'title', 'artist', 'year', 'genre', 'lyrics'], // 'title', 'artist',
         order: sequelize.random(),
       });
@@ -145,11 +137,7 @@ export default {
         attributes: ['id', 'title', 'artist', 'year', 'genre', 'lyrics'], // 'title', 'artist',
         order: sequelize.random(),
       });
-      // console.log(`songData1: ${songData1}`);
-      // console.log(`songData2: ${songData2}`);
-      // console.log(`songData3: ${songData3}`);
       let songData: TestData[] = songData1.concat(songData2).concat(songData3);
-      console.log(`songData: ${songData}`);
 
       return songData;
     } catch {}
@@ -160,13 +148,12 @@ export default {
   },
   classifyScoreType: (num: number) => {
     //* Best, Excellent, Hard work, Laggard
-    if (num >= 0.85) return ['B', 1];
-    else if (num >= 0.7) return ['E', 0.8];
-    else if (num >= 0.4) return ['H', 0.65];
-    else return ['L', 0.6];
+    if (num >= 0.75) return ['B', 0.8];
+    else if (num >= 0.55) return ['E', 0.65];
+    else if (num >= 0.3) return ['H', 0.45];
+    else return ['L', 0.25];
   },
   classifyGenreType: (arr: AnswerSheet[], scoreType: [string, number]) => {
-    //! 아직 구현 못 함 -> DB에서 조회하는걸로?
     //* Neutral, OST, Dance, Ballad, Hiphop
     let D: AnswerSheet[] = arr.filter((answer) => answer.genre === 'dance');
     let O: AnswerSheet[] = arr.filter((answer) => answer.genre === 'OST');
@@ -229,7 +216,7 @@ export default {
         second = 'N';
       }
     } else if (first === 'E') {
-      if (second === 'O') {
+      if (second === 'O' || third === 'B') {
         second = 'N';
       }
     } else if (first === 'H') {
@@ -241,50 +228,6 @@ export default {
       third = 'B';
     }
     let result = first + second + third;
-    console.log(`processResultType: ${result}`);
     return result;
   },
 };
-
-// loadQuestion: async (year: number, numOfSongs: number) => {
-//   try {
-//     console.log('loadQuestion');
-//     let focusYear: [number, number];
-//     if (year + 13 > 2020) {
-//       return null;
-//     } else if (year < 1968) {
-//       focusYear = [1980, 1996];
-//     } else {
-//       focusYear = [year + 13, year + 28 < 2021 ? year + 28 : 2021];
-//     }
-//     console.log('**************focusYear****************');
-//     console.log(focusYear);
-//     console.log('***************************************');
-//     let songData1 = await Songs.findAll({
-//       where: {
-//         year: {
-//           [Op.between]: focusYear,
-//         },
-//       },
-//       limit: numOfSongs - 3,
-//       attributes: ['id', 'title', 'artist', 'year', 'genre', 'lyrics'], // 'title', 'artist',
-//       order: sequelize.random(),
-//     });
-//     let songData2 = await Songs.findAll({
-//       where: {
-//         year: {
-//           [Op.notBetween]: focusYear,
-//         },
-//       },
-//       limit: 3,
-//       attributes: ['id', 'title', 'artist', 'year', 'genre', 'lyrics'], // 'title', 'artist',
-//       order: sequelize.random(),
-//     });
-//     // console.log(`songData1: ${songData1}`);
-//     // console.log(`songData2: ${songData2}`);
-//     let songData: TestData[] = songData1.concat(songData2);
-//     console.log(`songData: ${songData}`);
-
-//     return songData;
-//   } catch {}
-// },

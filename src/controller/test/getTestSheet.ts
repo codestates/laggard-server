@@ -15,11 +15,7 @@ import { TestData } from './interface';
 
 export const getTestSheet = async (req: Request, res: Response) => {
   try {
-    console.log('getTestSheet');
-    console.log(req.query);
-
     const birth_year: number = Number(req.query.birth_year);
-    console.log(birth_year);
     const sex: boolean = Boolean(req.query.sex);
 
     if (!birth_year || !sex) {
@@ -39,7 +35,6 @@ export const getTestSheet = async (req: Request, res: Response) => {
         birth_year,
         sex,
         questions_set,
-        // answer_set: '',
       });
       res.status(200).send({ id: testInfo.id, testData: testData });
     } else {
