@@ -51,7 +51,7 @@ app.get('/',(req:Request, res: Response) => {
 })
 
 const visitCounter = (req : Request, res : Response, next : NextFunction) => {
-  console.log("cookie : ", req.cookies['laggard-visitCounter']);
+  // console.log("cookie : ", req.cookies['laggard-visitCounter']);
 
   // if(!req.cookies['laggard-visitCounter']&& req.method!=='OPTIONS'){
   //   console.log("Visit Counter!");
